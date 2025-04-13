@@ -19,25 +19,23 @@ const fs = require("fs"); // Thêm module fs để làm việc với file system
 const app = express();
 
 // Tạo thư mục images nếu chưa tồn tại
-const imagesDir = path.join(__dirname, "images");
-if (!fs.existsSync(imagesDir)) {
-  fs.mkdirSync(imagesDir, { recursive: true });
-}
+// const imagesDir = path.join(__dirname, "images");
+// if (!fs.existsSync(imagesDir)) {
+//   fs.mkdirSync(imagesDir, { recursive: true });
+// }
 
-// Cấu hình CORS cho production và development
-// const allowedOrigins =
-//   process.env.NODE_ENV === "production"
-//     ? [
-//         process.env.FRONTEND_URL, // Thay bằng domain production của bạn
-//         process.env.ADMIN_URL, // Thay bằng admin domain production của bạn
-//         "https://lab03-node.onrender.com",
-//       ]
-//     : [
-//         "http://localhost:3000",
-//         "http://localhost:3001",
-//         "http://localhost:3002",
-//       ];
-
+// app.use(
+//   cors({
+//     origin: [
+//       "http://localhost:3000",
+//       "http://localhost:3001",
+//       "https://lab03-node.onrender.com",
+//     ],
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   })
+// );
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -49,9 +47,25 @@ app.use((req, res, next) => {
 });
 
 // Cấu hình Multer cho file upload
+// const fileStorage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "images");
+//   },
+//   filename: (req, file, cb) => {
+//     cb(
+//       null,
+//       new Date().toISOString().replace(/:/g, "-") + "-" + file.originalname
+//     );
+//   },
+// });
+// Thay đổi destination trong multer diskStorage
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, imagesDir);
+    const destPath = path.join(__dirname, "images");
+    if (!fs.existsSync(destPath)) {
+      fs.mkdirSync(destPath, { recursive: true });
+    }
+    cb(null, destPath);
   },
   filename: (req, file, cb) => {
     cb(
@@ -77,8 +91,15 @@ app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).array("images", 4)
 );
 
-app.use("/images", express.static(imagesDir));
-
+// app.use("/images", express.static(path.join(__dirname, "images")));
+app.use(
+  "/images",
+  express.static(path.join(__dirname, "images"), {
+    setHeaders: (res, path) => {
+      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    },
+  })
+);
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
