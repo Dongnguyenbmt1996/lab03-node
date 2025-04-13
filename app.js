@@ -25,21 +25,26 @@ if (!fs.existsSync(imagesDir)) {
 }
 
 // Cấu hình CORS cho production và development
-const allowedOrigins =
-  process.env.NODE_ENV === "production"
-    ? [
-        process.env.FRONTEND_URL, // Thay bằng domain production của bạn
-        process.env.ADMIN_URL, // Thay bằng admin domain production của bạn
-      ]
-    : [
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "http://localhost:3002",
-      ];
+// const allowedOrigins =
+//   process.env.NODE_ENV === "production"
+//     ? [
+//         process.env.FRONTEND_URL, // Thay bằng domain production của bạn
+//         process.env.ADMIN_URL, // Thay bằng admin domain production của bạn
+//         "https://lab03-node.onrender.com",
+//       ]
+//     : [
+//         "http://localhost:3000",
+//         "http://localhost:3001",
+//         "http://localhost:3002",
+//       ];
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "https://lab03-node.onrender.com",
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -119,3 +124,5 @@ mongoose
 
 //dongnttfx21730
 //iQ1TA760Se5lvzHx
+
+//https://lab03-node.onrender.com
