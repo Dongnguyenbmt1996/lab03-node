@@ -17,7 +17,12 @@ const multer = require("multer");
 const fs = require("fs"); // Thêm module fs để làm việc với file system
 
 const app = express();
-
+const cors = require('cors');
+app.use(cors({
+  origin: ['https://client-node-asm3.vercel.app', 'http://localhost:3000', 'http://localhost:3001'], 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 // app.use(
 //   cors({
 //     origin: [
@@ -34,31 +39,31 @@ const app = express();
 
 
 
-const allowedOrigins = ["http://localhost:3001", "http://localhost:3002"];
+// const allowedOrigins = ["http://localhost:3001", "http://localhost:3002"];
 
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
+// app.use((req, res, next) => {
+//   const origin = req.headers.origin;
 
-  // Chỉ thiết lập headers CORS cho các origin được phép
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-    res.header("Access-Control-Allow-Credentials", "true");
-  }
+//   // Chỉ thiết lập headers CORS cho các origin được phép
+//   if (allowedOrigins.includes(origin)) {
+//     res.header("Access-Control-Allow-Origin", origin);
+//     res.header("Access-Control-Allow-Credentials", "true");
+//   }
 
-  // Các headers khác (áp dụng cho mọi request)
-  res.header(
-    "Access-Control-Allow-Methods",
-    "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-  );
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   // Các headers khác (áp dụng cho mọi request)
+//   res.header(
+//     "Access-Control-Allow-Methods",
+//     "OPTIONS, GET, POST, PUT, PATCH, DELETE"
+//   );
+//   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-  // Xử lý preflight request
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
+//   // Xử lý preflight request
+//   if (req.method === "OPTIONS") {
+//     return res.sendStatus(200);
+//   }
 
-  next();
-});
+//   next();
+// });
 
 
 // Thay đổi destination trong multer diskStorage
