@@ -57,7 +57,9 @@ exports.createProduct = (req, res, next) => {
   }
 
   // Lấy đường dẫn các ảnh
-  const images = req.files.map((file) => file.path.replace(/\\/g, "/"));
+   const images = req.files.map((file) => {
+    return file.filename;
+  });
 
   const product = new Product({
     category: req.body.category,
