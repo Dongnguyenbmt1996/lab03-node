@@ -18,72 +18,48 @@ const fs = require("fs"); // Thêm module fs để làm việc với file system
 
 const app = express();
 
-// Tạo thư mục images nếu chưa tồn tại
-// const imagesDir = path.join(__dirname, "images");
-// if (!fs.existsSync(imagesDir)) {
-//   fs.mkdirSync(imagesDir, { recursive: true });
-// }
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      // "http://localhost:5000",
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
-// app.use(
-//   cors({
-//     origin: [
-//       "http://localhost:3000",
-//       "http://localhost:3001",
-//       "https://lab03-node.onrender.com",
-//     ],
-//     credentials: true,
-//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//     allowedHeaders: ["Content-Type", "Authorization"],
-//   })
-// );
+
+
+// const allowedOrigins = ["http://localhost:3001", "http://localhost:3002"];
+
 // app.use((req, res, next) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   res.setHeader(
+//   const origin = req.headers.origin;
+
+//   // Chỉ thiết lập headers CORS cho các origin được phép
+//   if (allowedOrigins.includes(origin)) {
+//     res.header("Access-Control-Allow-Origin", origin);
+//     res.header("Access-Control-Allow-Credentials", "true");
+//   }
+
+//   // Các headers khác (áp dụng cho mọi request)
+//   res.header(
 //     "Access-Control-Allow-Methods",
 //     "OPTIONS, GET, POST, PUT, PATCH, DELETE"
 //   );
-//   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+//   // Xử lý preflight request
+//   if (req.method === "OPTIONS") {
+//     return res.sendStatus(200);
+//   }
+
 //   next();
 // });
 
-const allowedOrigins = ["http://localhost:3001", "http://localhost:3002"];
 
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-
-  // Chỉ thiết lập headers CORS cho các origin được phép
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-    res.header("Access-Control-Allow-Credentials", "true");
-  }
-
-  // Các headers khác (áp dụng cho mọi request)
-  res.header(
-    "Access-Control-Allow-Methods",
-    "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-  );
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
-  // Xử lý preflight request
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-
-  next();
-});
-
-// Cấu hình Multer cho file upload
-// const fileStorage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, "images");
-//   },
-//   filename: (req, file, cb) => {
-//     cb(
-//       null,
-//       new Date().toISOString().replace(/:/g, "-") + "-" + file.originalname
-//     );
-//   },
-// });
 // Thay đổi destination trong multer diskStorage
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
