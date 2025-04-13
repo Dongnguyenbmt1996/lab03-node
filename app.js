@@ -22,6 +22,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
+      "https://react-client-asm3-node-fire.web.app"
       "http://localhost:3001",
       // "http://localhost:5000",
     ],
